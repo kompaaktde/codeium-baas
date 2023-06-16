@@ -1,16 +1,63 @@
 import React from "react";
+/**
+ * Renders a component that allows editing and saving content.
+ *
+ * @return {JSX.Element} The JSX representation of the component.
+ */
+const ProductEditor = () => {
+  const [content, setContent] = React.useState("");
+  const [isEditing, setIsEditing] = React.useState(false);
+  const handleContentChange = (event) => {
+    setContent(event.target.value);
+  };
 
-const ProductList = () => {
+  const handleSaveClick = () => {
+    // Save the content
+    localStorage.setItem("content", content);
+    setIsEditing(false);
+  };
+
+  const handleEditClick = () => {
+    // Switch between edit and view mode
+    setIsEditing(!isEditing);
+  };
+
+  React.useEffect(() => {
+    const savedContent = localStorage.getItem("content");
+    if (savedContent) {
+      setContent(savedContent);
+    }
+  }, []);
+
   return (
-    <div className="flex flex-row justify-between border-b-2 border-gray-300 p-4">
-      <div className="w-1/6 h-200 border-2 border-gray-300 p-4">
-        {/* Block content */}
+    <div className=" border-b-2 border-gray-300 p-4">
+      <div className="w-full h-200 border-2 border-gray-300 p-4">
+        {isEditing ? (
+          <textarea
+            value={content}
+            onChange={handleContentChange}
+            className="w-full h-full outline-none"
+          />
+        ) : (
+          <div>{content}</div>
+        )}
       </div>
-      <div className="w-1/6 h-200 border-2 border-gray-300 p-4">
-        {/* Block content */}
-      </div>
-      <div className="w-1/6 h-200 border-2 border-gray-300 p-4">
-        {/* Block content */}
+      <div className="flex flex-col justify-between pt-10">
+        {isEditing ? (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleSaveClick}
+          >
+            Save
+          </button>
+        ) : (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleEditClick}
+          >
+            Edit
+          </button>
+        )}
       </div>
     </div>
   );
@@ -27,10 +74,7 @@ function App() {
         />
       </div>
       <div className="w-1/2 p-4">
-        <ProductList />
-      </div>
-      <div className="w-1/2 p-4">
-        <ProductList />
+        <ProductEditor />
       </div>
     </div>
   );
